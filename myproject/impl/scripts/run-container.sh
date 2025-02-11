@@ -43,10 +43,10 @@ export enmasse_file_full_path=$host_root_dir/config/enmasse/$enmasse_file
 mkdir -p $host_root_dir/config/auto-generated
 
 # Populate environment variables for the server
-echo '[env]'                                        > $host_root_dir/config/auto-generated/env.ini
-echo My_API_Password_1=$My_API_Password_1          >> $host_root_dir/config/auto-generated/env.ini
-echo My_API_Password_2=$My_API_Password_2          >> $host_root_dir/config/auto-generated/env.ini
-echo Zato_Project_Root=$target/$env_name >> $host_root_dir/config/auto-generated/env.ini
+echo '[env]'                               > $host_root_dir/config/auto-generated/env.ini
+echo My_API_Password_1=$My_API_Password_1 >> $host_root_dir/config/auto-generated/env.ini
+echo My_API_Password_2=$My_API_Password_2 >> $host_root_dir/config/auto-generated/env.ini
+echo Zato_Project_Root=$target/$env_name  >> $host_root_dir/config/auto-generated/env.ini
 
 # Log what we're about to do
 echo Starting container $container_name

@@ -35,6 +35,16 @@ security:
     realm: My Company
 
 #
+# REST channels
+#
+channel_rest:
+  - name: Get Billing
+    service: api.billing.get
+    security_name: "HR API Key"
+    url_path: /api/billing/get
+    data_format: json
+
+#
 # Outgoing REST connections
 #
 outgoing_rest:
@@ -43,7 +53,7 @@ outgoing_rest:
   - name: My Outgoing REST API
     host: https://example.com
     url_path: /api/
-    security: "HR API Key"
+    security_name: "HR API Key"
     data_format: json
     ping_method: GET
 
