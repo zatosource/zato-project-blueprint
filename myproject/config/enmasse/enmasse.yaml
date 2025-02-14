@@ -85,6 +85,7 @@ outconn_sql:
     password: Zato_Enmasse_Env.My_SQL_Password
     extra: connect_timeout=10
     pool_size: 3
+    is_active: false
 
 #
 #
@@ -97,6 +98,7 @@ outgoing_ldap:
     auth_type: NTLM
     server_list: 10.67.11.89:389
     password: Zato_Enmasse_Env.My_LDAP_Password
+    is_active: false
 
 #
 # Generic connections cover multiple connection types
@@ -112,6 +114,7 @@ zato_generic_connection:
     tenant_id: dc626850-9484-46a8-aa68-49a48be17aa3
     secret: Zato_Enmasse_Env.My_Sharepoint_Secret
     scopes: https://graph.microsoft.com/.default
+    is_active: false
 
   #
   # How to connect to Jira
@@ -128,6 +131,7 @@ zato_generic_connection:
     is_outconn: true
     is_internal: false
     sec_use_rbac: false
+    is_active: false
 
 #
 # Outgoing SOAP connections
@@ -143,3 +147,4 @@ outconn_soap:
     soap_version: 1.1
     tls_verify: false
     timeout: 20
+    is_active: false

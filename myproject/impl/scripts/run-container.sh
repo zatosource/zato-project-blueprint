@@ -15,7 +15,7 @@ N="/dev/null";pushd .>$N;cd `dirname ${CURDIR}`>$N;CURDIR=`pwd`;popd>$N
 export env_name=myproject
 
 # What password to use when logging in to the dashboard
-export dashboard_password=${My_Password:-$(uuidgen)}
+export dashboard_password=${Zato_Password:-$(uuidgen)}
 
 # What Zato version to use
 export zato_version=3.3
