@@ -15,7 +15,10 @@ N="/dev/null";pushd .>$N;cd `dirname ${CURDIR}`>$N;CURDIR=`pwd`;popd>$N
 export env_name=myproject
 
 # What password to use when logging in to the dashboard
-export dashboard_password=${Zato_Password:-$(uuidgen)}
+export zato_password=${Zato_Password:-$(uuidgen)}
+
+# How much of the logging details to show, e.g. "-v" or "-vvvvv"
+export zato_build_verbosity=${Zato_Build_Verbosity:-""}
 
 # What Zato version to use
 export zato_version=3.3
@@ -61,8 +64,12 @@ docker run                                                \
     -p 8183:8183                                          \
     -p 17010:17010                                        \
                                                           \
-    -e Zato_Dashboard_Password=$dashboard_password        \
+    -e Zato_Dashboard_Password=$zato_password             \
+    -e ZATO_SSH_PASSWORD=$zato_password                   \
+    -e Zato_IDE_Password=$zato_password                   \
     -e Zato_Log_Env_Details=true                          \
+                                                          \
+    -e Zato_Build_Verbosity="$zato_build_verbosity"       \
                                                           \
     --mount type=bind,source=$zato_project_root,target=$target/$env_name,readonly \
     --mount type=bind,source=$enmasse_file_full_path,target=$target/enmasse/enmasse.yaml,readonly \
