@@ -20,19 +20,19 @@ It serves as a template for building your own provisioning scripts and managing 
 ## Project structure
 
 ```
-myproject/
-├── config/
-│   ├── enmasse/
-│   │   └── enmasse.yaml          # Configuration definitions (REST channels, security, etc.)
-│   ├── python-reqs/
-│   │   └── requirements.txt      # Python dependencies from PyPI
-│   └── user-conf/
-│       └── myproject.ini         # Custom configuration for fast RAM access
-└── impl/
-    ├── scripts/
-    │   └── run-container.sh      # Blueprint provisioning script
-    └── src/
-        └── api/                  # Your Zato services go here
+myproject
+├── config
+│   ├── enmasse
+│   │   └── enmasse.yaml       # Configuration definitions (REST channels, security, etc.)
+│   ├── python-reqs
+│   │   └── requirements.txt   # Python dependencies from PyPI
+│   └── user-conf
+│       └── myproject.ini      # Custom configuration for fast RAM access
+└── impl
+    ├── scripts
+    │   └── run-container.sh   # Blueprint provisioning script
+    └── src
+        └── api                # Your Zato services go here
             ├── billing.py
             └── employee.py
 ```
