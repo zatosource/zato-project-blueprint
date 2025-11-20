@@ -21,7 +21,7 @@ export zato_password=${Zato_Password:-$(uuidgen)}
 export zato_build_verbosity=${Zato_Build_Verbosity:-""}
 
 # What Zato version to use
-export zato_version=3.3
+export zato_version=4.1
 
 # Name the container
 export container_name=zato-$env_name
@@ -30,7 +30,7 @@ export container_name=zato-$env_name
 export target=/opt/hot-deploy
 
 # Full address of the remote Docker package
-export package_address=ghcr.io/zatosource/zato-$zato_version-quickstart:latest
+export package_address=zatosource/zato-$zato_version:latest
 
 # Absolute path to our source code on host
 export host_root_dir=`readlink -f $CURDIR/../../`
@@ -59,6 +59,7 @@ docker run                                                \
                                                           \
     --name $container_name                                \
     --restart unless-stopped                              \
+    --pull=always                                         \
                                                           \
     -p 22022:22                                           \
     -p 8183:8183                                          \
