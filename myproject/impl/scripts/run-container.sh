@@ -62,7 +62,11 @@ docker run                                                \
                                                           \
     -p 22022:22                                           \
     -p 8183:8183                                          \
-    -p 17010:17010                                        \
+    -p 8184:8184                                          \
+    -p 11223:11223                                        \
+    -p 11225:11225                                        \
+    -p 33033:3000                                         \
+    -p 35672:15672                                        \
                                                           \
     -e Zato_Dashboard_Password=$zato_password             \
     -e ZATO_SSH_PASSWORD=$zato_password                   \
