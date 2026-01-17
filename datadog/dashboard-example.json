@@ -1,0 +1,110 @@
+{
+  "title": "Zato services overview",
+  "description": "APM metrics for all Zato services",
+  "widgets": [
+    {
+      "definition": {
+        "title": "Service latency over time (ms)",
+        "type": "timeseries",
+        "requests": [
+          {
+            "response_format": "timeseries",
+            "queries": [
+              {
+                "data_source": "spans",
+                "name": "a",
+                "search": {"query": ""},
+                "indexes": ["*"],
+                "group_by": [{"facet": "service", "limit": 10, "sort": {"aggregation": "avg", "order": "desc", "metric": "@duration"}}],
+                "compute": {"aggregation": "avg", "metric": "@duration"}
+              }
+            ],
+            "formulas": [{"alias": "latency", "formula": "a / 1000000"}],
+            "display_type": "line",
+            "style": {"palette": "dog_classic", "line_type": "solid", "line_width": "normal"}
+          }
+        ],
+        "yaxis": {"include_zero": true},
+        "show_legend": true,
+        "legend_layout": "auto",
+        "legend_columns": ["avg", "max", "value"]
+      },
+      "layout": {"x": 0, "y": 0, "width": 6, "height": 3}
+    },
+    {
+      "definition": {
+        "title": "Request count by service",
+        "type": "timeseries",
+        "requests": [
+          {
+            "response_format": "timeseries",
+            "queries": [
+              {
+                "data_source": "spans",
+                "name": "a",
+                "search": {"query": ""},
+                "indexes": ["*"],
+                "group_by": [{"facet": "service", "limit": 10, "sort": {"aggregation": "count", "order": "desc"}}],
+                "compute": {"aggregation": "count"}
+              }
+            ],
+            "formulas": [{"alias": "requests", "formula": "a"}],
+            "display_type": "bars"
+          }
+        ],
+        "show_legend": true,
+        "legend_layout": "auto",
+        "legend_columns": ["avg", "sum", "value"]
+      },
+      "layout": {"x": 6, "y": 0, "width": 6, "height": 3}
+    },
+    {
+      "definition": {
+        "title": "Top services by avg duration (ms)",
+        "type": "toplist",
+        "requests": [
+          {
+            "response_format": "scalar",
+            "queries": [
+              {
+                "data_source": "spans",
+                "name": "a",
+                "search": {"query": ""},
+                "indexes": ["*"],
+                "group_by": [{"facet": "service", "limit": 10, "sort": {"aggregation": "avg", "order": "desc", "metric": "@duration"}}],
+                "compute": {"aggregation": "avg", "metric": "@duration"}
+              }
+            ],
+            "formulas": [{"formula": "a / 1000000", "limit": {"count": 10, "order": "desc"}}]
+          }
+        ]
+      },
+      "layout": {"x": 0, "y": 3, "width": 6, "height": 3}
+    },
+    {
+      "definition": {
+        "title": "Top resources by request count",
+        "type": "toplist",
+        "requests": [
+          {
+            "response_format": "scalar",
+            "queries": [
+              {
+                "data_source": "spans",
+                "name": "a",
+                "search": {"query": ""},
+                "indexes": ["*"],
+                "group_by": [{"facet": "resource_name", "limit": 10, "sort": {"aggregation": "count", "order": "desc"}}],
+                "compute": {"aggregation": "count"}
+              }
+            ],
+            "formulas": [{"formula": "a", "limit": {"count": 10, "order": "desc"}}]
+          }
+        ]
+      },
+      "layout": {"x": 6, "y": 3, "width": 6, "height": 3}
+    }
+  ],
+  "layout_type": "ordered",
+  "reflow_type": "fixed"
+}
