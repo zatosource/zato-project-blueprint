@@ -1,8 +1,12 @@
-name: Test Zato Services
+name: Test Zato services
 
 on:
   push:
     branches: [main, develop]
+
+permissions:
+  contents: read
+  checks: write
 
 jobs:
   test:
@@ -26,6 +30,6 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: Test Results
+          name: Test results
           path: test-results.xml
           reporter: java-junit
