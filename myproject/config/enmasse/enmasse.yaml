@@ -1,150 +1,138 @@
+
 security:
-
-  # How to use HTTP Basic Auth
-  - name: "HR API Key"
-    username: hr
-    password: Zato_Enmasse_Env.My_API_Password_1
+  - name: postburn.globus.1.http.basic_auth
+    is_active: True
     type: basic_auth
-    realm: MyProject
+    username: postburn.globus.1
+    password: postburn.globus.1
+  - name: postburn.orchestrator.1.http.basic_auth
+    is_active: True
+    type: basic_auth
+    username: postburn.orchestrator.1
+    password: postburn.orchestrator.1
+  - name: postburn.sentinel-2-l2a.1.http.basic_auth
+    is_active: True
+    type: basic_auth
+    username: postburn.sentinel-2-l2a.1
+    password: postburn.sentinel-2-l2a.1
+  - name: postburn.test.1.http.basic_auth
+    is_active: True
+    type: basic_auth
+    username: postburn.test.1
+    password: postburn.test.1
+  - name: postburn.test.2.http.basic_auth
+    is_active: True
+    type: basic_auth
+    username: postburn.test.2
+    password: postburn.test.2
+  - name: postburn.test.3.http.basic_auth
+    is_active: True
+    type: basic_auth
+    username: postburn.test.3
+    password: postburn.test.3
 
-# How to use Bearer Tokens
-  - name: My Bearer Token 1
-    username: billing
-    password: Zato_Enmasse_Env.My_Token_1
-    type: bearer_token
-    auth_endpoint: https://example.com/token
-    client_id_field: username
-    client_secret_field: password
-    grant_type: password
-    data_format: form
+groups:
 
-  # Bearer Tokens again, with different options
-  - name: My Bearer Token 2
-    username: crm
-    password: Zato_Enmasse_Env.My_Token_2
-    type: bearer_token
-    auth_endpoint: https://example.com/oauth/token
-    extra_fields:
-      - audience=https://example.com
-
-# How to use NTLM security
-  - name: My NTLM Security
-    username: user@mycompany.local
-    password: Zato_Enmasse_Env.My_NTLM_Password
-    type: ntlm
-    realm: My Company
-
-#
-# REST channels
-#
 channel_rest:
-  - name: Get Billing
-    service: api.billing.get
-    security_name: "HR API Key"
-    url_path: /api/billing/get
-    data_format: json
+  - name: pubsub.rest.get-messages
+    service: pubsub.rest.get-messages
+    url_path: /pubsub/messages/get
+  - name: pubsub.rest.publish
+    service: pubsub.rest.publish
+    url_path: /pubsub/topic/{topic_name}
+  - name: pubsub.rest.subscribe
+    service: pubsub.rest.subscribe
+    url_path: /pubsub/subscribe/topic/{topic_name}
+  - name: pubsub.rest.unsubscribe
+    service: pubsub.rest.unsubscribe
+    url_path: /pubsub/unsubscribe/topic/{topic_name}
 
-#
-# Outgoing REST connections
-#
 outgoing_rest:
 
-  # How to define an outgoing REST connection
-  - name: My Outgoing REST API
-    host: https://example.com
-    url_path: /api/
-    security_name: "HR API Key"
-    data_format: json
-    ping_method: GET
-
-#
-# Scheduler
-#
 scheduler:
-
-  # How to define a scheduled task
-  - name: My Scheduled Task
-    service: pub.zato.ping
+  - name: zato.outgoing.sql.auto-ping
+    is_active: True
+    service: zato.outgoing.sql.auto-ping
     job_type: interval_based
-    start_date: 2025-02-11 10:00:00
-    seconds: 3
-    is_active: true
+    start_date: 2026-03-31 14:10:33
+    minutes: 3
 
-#
-# SQL connections
-#
-outconn_sql:
+ldap:
+sql:
+outgoing_soap:
+microsoft_365:
+cache:
+confluence:
+jira:
+email_imap:
+email_smtp:
+odoo:
+elastic_search:
 
-    # How to connect to an SQL database
-  - name: My SQL Database
-    engine: zato+mssql1 # Other options are "oracle", "postgresql+pg8000" and "mysql+pymysql"
-    host: 10.19.21.39
-    port: 1433
-    db_name: MYDB
-    username: zato
-    password: Zato_Enmasse_Env.My_SQL_Password
-    extra: connect_timeout=10
-    pool_size: 3
-    is_active: false
+pubsub_topic:
+  - name: postburn.globus.1
+  - name: postburn.orchestrator.1
+  - name: postburn.sentinel-2-l2a.1
+  - name: postburntest
+  - name: postburntest2
 
-#
-#
-#
-outgoing_ldap:
+pubsub_permission:
+  - security: postburn.globus.1.http.basic_auth
+    pub:
+      - postburn.orchestrator.1
+    sub:
+      - postburn.globus.1
+  - security: postburn.orchestrator.1.http.basic_auth
+    pub:
+      - postburn.sentinel-2-l2a.1
+    sub:
+      - postburn.orchestrator.1
+  - security: postburn.sentinel-2-l2a.1.http.basic_auth
+    pub:
+      - postburn.orchestrator.1
+    sub:
+      - postburn.sentinel-2-l2a.1
+  - security: postburn.test.1.http.basic_auth
+    pub:
+      - postburn.sentinel-2-l2a.1
+      - postburntest
+  - security: postburn.test.2.http.basic_auth
+    sub:
+      - postburn.sentinel-2-l2a.1
+      - postburntest
+  - security: postburn.test.3.http.basic_auth
+    pub:
+      - postburntest2
 
-  # How to connect to LDAP
-  - name: My LDAP
-    username: 'CN=zato,OU=dev,DC=mycompany,DC=local'
-    auth_type: NTLM
-    server_list: 10.67.11.89:389
-    password: Zato_Enmasse_Env.My_LDAP_Password
-    is_active: false
+pubsub_subscription:
+  - security: postburn.sentinel-2-l2a.1.http.basic_auth
+    delivery_type: pull
+    topic_list:
+      - postburn.orchestrator.1
+      - postburn.sentinel-2-l2a.1
+  - security: postburn.orchestrator.1.http.basic_auth
+    delivery_type: pull
+    topic_list:
+      - postburn.orchestrator.1
+      - postburn.sentinel-2-l2a.1
+  - security: postburn.test.2.http.basic_auth
+    delivery_type: pull
+    topic_list:
+      - postburn.sentinel-2-l2a.1
+      - postburntest
+  - security: postburn.test.1.http.basic_auth
+    delivery_type: pull
+    topic_list:
+      - postburn.sentinel-2-l2a.1
+      - postburntest
+  - security: postburn.globus.1.http.basic_auth
+    delivery_type: pull
+    topic_list:
+      - postburn.globus.1
+      - postburn.orchestrator.1
+  - security: postburn.test.3.http.basic_auth
+    delivery_type: pull
+    topic_list:
+      - postburntest2
 
-#
-# Generic connections cover multiple connection types
-#
-zato_generic_connection:
-
-  #
-  # How to connect to Microsoft 365
-  #
-  - type_: cloud-microsoft-365
-    name: My Sharepoint
-    client_id: 2e82cd25-1a98-4bda-a9aa-6df8a6afeafe
-    tenant_id: dc626850-9484-46a8-aa68-49a48be17aa3
-    secret: Zato_Enmasse_Env.My_Sharepoint_Secret
-    scopes: https://graph.microsoft.com/.default
-    is_active: false
-
-  #
-  # How to connect to Jira
-  #
-  - type_: cloud-jira
-    name: My Jira
-    address: https://example.atlassian.net
-    username: jira@example.com
-    secret: Zato_Enmasse_Env.My_Jira_Password
-    is_cloud: true
-    api_version: 3
-    pool_size: 5
-    is_channel: false
-    is_outconn: true
-    is_internal: false
-    sec_use_rbac: false
-    is_active: false
-
-#
-# Outgoing SOAP connections
-#
-outconn_soap:
-
-  # How to define an outgoing SOAP connection
-  - name: Invoice.Create
-    host: http://10.151.19.37
-    url_path: /WebAPI
-    security: "My NTLM Security"
-    soap_action: urn:microsoft-dynamics-schemas/page/invoice:Create
-    soap_version: 1.1
-    tls_verify: false
-    timeout: 20
-    is_active: false
+channel_openapi:
