@@ -1,3 +1,5 @@
 
 # Ignore auto-generated files
 myproject/config/auto-generated/env.ini
+
+__pycache__/

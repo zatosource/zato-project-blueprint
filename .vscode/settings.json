@@ -1,0 +1,16 @@
+{
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./myproject/testing/tests",
+        "-p",
+        "test_*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "python.analysis.extraPaths": [
+        "./myproject/impl/src",
+        "./myproject/testing/ext"
+    ],
+    "python.envFile": "${workspaceFolder}/.env"
+}
