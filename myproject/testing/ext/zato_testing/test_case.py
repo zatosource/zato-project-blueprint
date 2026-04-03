@@ -34,9 +34,12 @@ class ServiceTestCase(unittest.TestCase):
         super().setUp()
         self._rest_responses:'dict' = {}
         self._ldap_responses:'dict' = {}
-        self._conn_types:'dict' = {}  # Maps conn_name to 'rest' or 'ldap'
+        self._sql_responses:'dict' = {}
+        self._jira_responses:'dict' = {}
+        self._conn_types:'dict' = {}
         self._config:'dict' = {}
         self._cache = None
+        self._auto_load_user_conf()
         self._load_class_config()
 
 # ################################################################################################################################
@@ -124,6 +127,14 @@ class ServiceTestCase(unittest.TestCase):
             ldap_conn = service.out.ldap[conn_name]
             ldap_conn.conn._conn._entries = response_data['response']
 
+        for conn_name, response_data in self._sql_responses.items():
+            sql_conn = service.out.sql[conn_name]
+            sql_conn._session.set_results(response_data['response'])
+
+        for conn_name, response_data in self._jira_responses.items():
+            jira_conn = service.cloud.jira[conn_name]
+            jira_conn.conn._client.set_jql_results(response_data['response'])
+
         for path, response_data in getattr(self, '_ms365_responses', {}).items():
             service.cloud.ms365.set_response(path, response_data['response'], response_data['request'])
 
@@ -141,6 +152,26 @@ class ServiceTestCase(unittest.TestCase):
             else:
                 setattr(result, key, value)
         return result
+
+# ################################################################################################################################
+
+    def _auto_load_user_conf(self) -> 'None':
+        """ Auto-detects and loads config from config/user-conf if available.
+        """
+        import os
+        import glob
+
+        test_file = os.path.abspath(self.__class__.__module__.replace('.', '/') + '.py')
+        search_dir = os.path.dirname(test_file)
+
+        while search_dir and search_dir != '/':
+            user_conf_dir = os.path.join(search_dir, 'config', 'user-conf')
+            if os.path.isdir(user_conf_dir):
+                ini_files = glob.glob(os.path.join(user_conf_dir, '*.ini'))
+                for ini_file in ini_files:
+                    self._load_ini_file(ini_file)
+                return
+            search_dir = os.path.dirname(search_dir)
 
 # ################################################################################################################################
 
@@ -261,7 +292,7 @@ class ServiceTestCase(unittest.TestCase):
         has_explicit_prefix = False
         if ':' in conn_name:
             prefix, actual_conn_name = conn_name.split(':', 1)
-            if prefix in ('rest', 'ldap'):
+            if prefix in ('rest', 'ldap', 'sql', 'jira', 'ms365'):
                 conn_type = prefix
                 has_explicit_prefix = True
 
@@ -283,6 +314,22 @@ class ServiceTestCase(unittest.TestCase):
                 'status_code': status_code,
                 'headers': headers or {},
             }
+        elif conn_type == 'sql':
+            self._sql_responses[actual_conn_name] = {
+                'response': response,
+            }
+        elif conn_type == 'jira':
+            self._jira_responses[actual_conn_name] = {
+                'response': response,
+            }
+        elif conn_type == 'ms365':
+            if not hasattr(self, '_ms365_responses'):
+                self._ms365_responses:'dict' = {}
+            self._ms365_responses[actual_conn_name] = {
+                'response': response,
+                'request': request,
+            }
+            return
         elif request is not None:
             if not hasattr(self, '_rest_responses_when'):
                 self._rest_responses_when:'dict' = {}

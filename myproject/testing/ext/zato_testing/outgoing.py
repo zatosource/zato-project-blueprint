@@ -157,8 +157,14 @@ class ResponseHandler:
         self._call_index = 0
         self._request_map:'dict' = {}
 
+        # List = sequential responses
+        if isinstance(responses, list):
+            self._mode = 'sequential'
+            self._min_key = 0
+            self._sequential_list = responses
+            self._call_index = 0
         # Dict with integer keys = sequential responses
-        if isinstance(responses, dict) and responses:
+        elif isinstance(responses, dict) and responses:
             first_key = next(iter(responses.keys()))
             if isinstance(first_key, int):
                 self._mode = 'sequential'
@@ -185,7 +191,14 @@ class ResponseHandler:
                 data = self._sequential_list[idx]
                 self._call_index += 1
             else:
-                data = self._sequential_list[-1] if self._sequential_list else None
+                total = len(self._sequential_list)
+                call_num = idx + 1
+                response_word = 'response' if total == 1 else 'responses'
+                raise ValueError(
+                    f'No more responses available. '
+                    f'You configured {total} {response_word}, but call #{call_num} was made. '
+                    f'Add more responses to your set_response list or dict.'
+                )
             return RESTResponse(data=data, status_code=self._status_code, headers=self._headers)
 
         elif self._mode == 'request_match':

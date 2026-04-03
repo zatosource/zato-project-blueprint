@@ -2,3 +2,5 @@
 # Ignore auto-generated files
 myproject/config/auto-generated/env.ini
 __pycache__
+.env
+.vscode
